@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Orders</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header id="nav"></header>
+<main>
+  <h2>My Orders</h2>
+  <div id="orders">Loading...</div>
+</main>
+<script src="app.js"></script>
+<script>
+(async () => {
+  const box = document.getElementById('orders');
+  try {
+    const orders = await api('/api/orders');
+    if (!orders.length) { box.innerHTML = '<div class="box">No orders yet. <a href="/">Start shopping</a></div>'; return; }
+    box.innerHTML = orders.map(o => `
+      <div class="box">
+        <b>Order #${o.id}</b> — ${o.created_at}<br>
+        <small>Address: ${o.address}</small>
+        <table style="margin-top:10px">
+          ${o.items.map(i => `<tr><td>${i.image} ${i.name}</td><td>${i.quantity} × ${rupee(i.price)}</td></tr>`).join('')}
+        </table>
+        <div class="total">Total: ${rupee(o.total)}</div>
+      </div>`).join('');
+  } catch (e) {
+    box.innerHTML = `<div class="box">${e.message}. <a href="/login.html">Login</a></div>`;
+  }
+})();
+</script>
+</body></html>

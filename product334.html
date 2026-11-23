@@ -1,0 +1,26 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product Details</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header id="nav"></header>
+<main>
+  <div class="box detail" id="detail">Loading...</div>
+  <a href="/" class="btn gray">← Back to products</a>
+</main>
+<script src="app.js"></script>
+<script>
+(async () => {
+  const id = new URLSearchParams(location.search).get('id');
+  try {
+    const p = await api('/api/products/' + id);
+    document.getElementById('detail').innerHTML = `
+      <div class="emoji">${p.image}</div>
+      <div>
+        <h2>${p.name}</h2>
+        <p style="margin-bottom:12px">${p.description}</p>
+        <div class="price" style="font-size:22px">${rupee(p.price)}</div>
+        <button class="btn" onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>`;
+  } catch (e) { document.getElementById('detail').textContent = e.message; }
+})();
+</script>
+</body></html>
